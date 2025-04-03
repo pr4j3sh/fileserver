@@ -1,0 +1,21 @@
+{
+  "name": "fileserver",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Running tests..\" && exit 1",
+    "start": "node .",
+    "dev": "nodemon --env-file=.env ."
+  },
+  "keywords": [],
+  "author": "Prajesh Pratap Singh <prajesh.eleven118@gmail.com> (https://pr4j3sh.github.io/pr4j3sh/)",
+  "license": "MIT",
+  "description": "file server",
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "dependencies": {
+    "exhandlers": "^1.1.5",
+    "express": "^4.21.1"
+  }
+}
