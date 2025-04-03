@@ -2,6 +2,12 @@
 
 This is an express js server, depicting implementation of a file server.
 
+### API Reference
+
+```bash
+POST /api/upload?part=[Number]  # upload file
+```
+
 ## Usage
 
 - Clone using `git`
