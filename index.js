@@ -8,8 +8,11 @@ const {
   transports,
   streamHandler,
   rateLimitHandler,
+  uploadHandler,
 } = require("exhandlers");
 const express = require("express");
+const multer = require("multer");
+const crypto = require("crypto");
 
 const port = process.env.PORT;
 const hostname = process.env.HOSTNAME;
@@ -17,8 +20,23 @@ const origins = process.env.ORIGINS;
 
 const server = express();
 const logger = initLogger("info", transports);
+const upload = uploadHandler({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, "public"),
+    filename: (req, file, cb) => {
+      let { part } = req.query;
+      if (!part) part = "";
+      const hash = crypto
+        .createHash("sha1")
+        .update(JSON.stringify(file))
+        .digest("hex");
+      cb(null, hash + "_" + part + "." + file.originalname.split(".").pop());
+    },
+  }),
+});
 
 server.use(express.json());
+server.use(express.static("public"));
 server.use(corsHandler(origins));
 server.use(logHandler("combined", { stream: streamHandler(logger) }));
 server.use(rateLimitHandler({ windowMs: 10 * 60 * 1000, limit: 100 }));
@@ -30,6 +48,14 @@ server.get(
       success: true,
       message: "server online",
     });
+  }),
+);
+
+server.post(
+  "/api/upload",
+  upload.single("file"),
+  asyncHandler(async (req, res) => {
+    res.json({ file: req.file });
   }),
 );
 
